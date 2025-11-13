@@ -11,7 +11,7 @@
  Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 13/11/2025 13:58:07
+ Date: 13/11/2025 16:59:37
 */
 
 SET NAMES utf8mb4;
@@ -258,15 +258,18 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+                        `user_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户账号',
+                        `nick_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
+                        `user_type` tinyint(1) DEFAULT '1' COMMENT '1:普通用户 2:商家管理员',
+                        `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
                         `phone` varchar(11) NOT NULL COMMENT '手机号',
-                        `nickname` varchar(50) DEFAULT NULL COMMENT '用户昵称',
-                        `avatar` varchar(500) DEFAULT NULL COMMENT '头像',
-                        `user_role` tinyint(1) DEFAULT '1' COMMENT '1:普通用户 2:商家管理员',
-                        `status` tinyint(1) DEFAULT '1' COMMENT '1:正常 0:禁用',
+                        `avatar` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '头像地址',
+                        `status` tinyint(1) DEFAULT '1' COMMENT '账号状态（0正常 1停用）',
+                        `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '密码',
                         `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                         `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                        PRIMARY KEY (`id`),
+                        PRIMARY KEY (`id`) USING BTREE,
                         UNIQUE KEY `uk_phone` (`phone`),
                         KEY `idx_phone` (`phone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';
@@ -275,9 +278,9 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `phone`, `nickname`, `avatar`, `user_role`, `status`, `create_time`, `update_time`) VALUES (1, '13800138001', '测试用户1', 'https://example.com/avatar1.jpg', 1, 1, '2024-01-15 10:30:00', '2024-01-15 10:30:00');
-INSERT INTO `user` (`id`, `phone`, `nickname`, `avatar`, `user_role`, `status`, `create_time`, `update_time`) VALUES (2, '13800138002', '测试用户2', 'https://example.com/avatar2.jpg', 1, 1, '2024-01-15 11:20:00', '2024-01-15 11:20:00');
-INSERT INTO `user` (`id`, `phone`, `nickname`, `avatar`, `user_role`, `status`, `create_time`, `update_time`) VALUES (3, '13800138003', '商家管理员', 'https://example.com/avatar3.jpg', 2, 1, '2024-01-15 12:15:00', '2024-01-15 12:15:00');
+INSERT INTO `user` (`id`, `user_name`, `nick_name`, `user_type`, `sex`, `phone`, `avatar`, `status`, `password`, `create_time`, `update_time`) VALUES (1, '', '测试用户1', 1, '0', '13800138001', 'https://example.com/avatar1.jpg', 1, '', '2024-01-15 10:30:00', '2024-01-15 10:30:00');
+INSERT INTO `user` (`id`, `user_name`, `nick_name`, `user_type`, `sex`, `phone`, `avatar`, `status`, `password`, `create_time`, `update_time`) VALUES (2, '', '测试用户2', 1, '0', '13800138002', 'https://example.com/avatar2.jpg', 1, '', '2024-01-15 11:20:00', '2024-01-15 11:20:00');
+INSERT INTO `user` (`id`, `user_name`, `nick_name`, `user_type`, `sex`, `phone`, `avatar`, `status`, `password`, `create_time`, `update_time`) VALUES (3, '', '商家管理员', 2, '0', '13800138003', 'https://example.com/avatar3.jpg', 1, '', '2024-01-15 12:15:00', '2024-01-15 12:15:00');
 COMMIT;
 
 -- ----------------------------

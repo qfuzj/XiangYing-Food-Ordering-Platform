@@ -1,10 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>登录测试</title>
 </head>
 <body>
-<h1>欢迎来到首页！！！</h1>
+<h2>登录表单测试</h2>
+<form id="loginForm">
+  <label>用户名: <input type="text" name="username" required></label><br>
+  <label>密码: <input type="password" name="password" required></label><br>
+  <button type="submit">登录</button>
+</form>
+<button id="callProtected">调用受保护接口 /a</button>
+<div id="result"></div>
+<script>
+  document.getElementById('loginForm').onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {
+      username: formData.get('username'),
+      password: formData.get('password')
+    };
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+      .then(async res => {
+        if (!res.ok) throw new Error('登录失败');
+        return res.json();
+      })
+      .then(json => {
+        // json.token, json.tokenType
+        localStorage.setItem('token', json.token);
+        localStorage.setItem('tokenType', json.tokenType || 'Bearer');
+        document.getElementById('result').innerText = '登录成功，token已保存';
+      })
+      .catch(err => {
+        document.getElementById('result').innerText = '请求失败';
+      });
+  };
+
+  document.getElementById('callProtected').onclick = function() {
+    const token = localStorage.getItem('token');
+    const type = localStorage.getItem('tokenType') || 'Bearer';
+    fetch('/a', {
+      method: 'GET',
+      headers: {
+        'Authorization': token ? (type + ' ' + token) : ''
+      }
+    })
+      .then(async res => {
+        const text = await res.text();
+        document.getElementById('result').innerText = '状态: ' + res.status + '，返回: ' + text;
+      })
+      .catch(err => {
+        document.getElementById('result').innerText = '请求失败';
+      });
+  };
+</script>
 </body>
 </html>
